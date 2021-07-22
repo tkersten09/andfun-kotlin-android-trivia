@@ -79,4 +79,9 @@
         android:name="com.example.android.navigation.DrawFragment"
         android:label="fragment_draw"
         tools:layout="@layout/fragment_draw" />
+    <fragment
+        android:id="@+id/audioVideoFragment"
+        android:name="com.example.android.navigation.AudioVideoFragment"
+        android:label="Audio and video"
+        tools:layout="@layout/fragment_audio_video" />
 </navigation>

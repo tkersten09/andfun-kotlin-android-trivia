@@ -13,4 +13,8 @@
         android:id="@+id/drawFragment"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/draw_test" />
+    <item
+        android:id="@+id/audioVideoFragment"
+        android:icon="@android:drawable/presence_video_online"
+        android:title="Audio and Video" />
 </menu>
