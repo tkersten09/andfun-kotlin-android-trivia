@@ -16,12 +16,13 @@
 
 package com.example.android.navigation
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.android.navigation.databinding.FragmentGameOverBinding
 
 class GameOverFragment : Fragment() {
@@ -30,6 +31,45 @@ class GameOverFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentGameOverBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_game_over, container, false)
+
+        val args = GameOverFragmentArgs.fromBundle(requireArguments())
+        Toast.makeText(context, "NumCorrent: ${args.numCorrect}, NumQuestions ${args.numQuestions}", Toast.LENGTH_LONG).show()
+
+//        binding.tryAgainButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_gameOverFragment_to_gameFragment))
+        binding.tryAgainButton.setOnClickListener{
+            v: View ->  v.findNavController().navigate(GameOverFragmentDirections.actionGameOverFragmentToGameFragment())
+        }
+
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.winner_menu, menu)
+        // check if activity resolves (some app exists which supports the intent)
+        if(null == getShareIntent().resolveActivity(requireActivity().packageManager)){
+            // hide the menu item if it does not resolve
+            menu.findItem(R.id.share).setVisible(false)
+        }
+    }
+
+    // Connect the menu item which the share activity
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.share -> shareSuccess()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun getShareIntent(): Intent{
+        val args = GameOverFragmentArgs.fromBundle(requireArguments())
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.setType("text/plain").putExtra(Intent.EXTRA_TEXT, getString(R.string.share_success_text, args.numCorrect, args.numQuestions))
+        return shareIntent
+    }
+    // Starting an Activity with out new Intent
+    private fun shareSuccess(){
+        startActivity(getShareIntent())
     }
 }
